@@ -62,7 +62,11 @@ module Dropbox
         end
         
         def clean_data(data)
-          data.inject({}) { |j, (k, v)| j[k.to_s] = v; j }
+          if data.respond_to? :keys
+            data.inject({}) { |j, (k, v)| j[k.to_s] = v; j }
+          else
+            data
+          end
         end
 
       end
