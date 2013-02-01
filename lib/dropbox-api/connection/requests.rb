@@ -32,6 +32,7 @@ module Dropbox
 
 
         def get_raw(endpoint, path, data = {}, headers = {})
+          data = clean_data(data)
           query = Dropbox::API::Util.query(data)
           request(:raw => true) do
             token(endpoint).get "#{Dropbox::API::Config.prefix}#{path}?#{URI.parse(URI.encode(query))}", headers
@@ -39,6 +40,7 @@ module Dropbox
         end
 
         def get(endpoint, path, data = {}, headers = {})
+          data = clean_data(data)
           query = Dropbox::API::Util.query(data)
           request do
             token(endpoint).get "#{Dropbox::API::Config.prefix}#{path}?#{URI.parse(URI.encode(query))}", headers
@@ -46,15 +48,21 @@ module Dropbox
         end
 
         def post(endpoint, path, data = {}, headers = {})
+          data = clean_data(data)
           request do
             token(endpoint).post "#{Dropbox::API::Config.prefix}#{path}", data, headers
           end
         end
 
         def put(endpoint, path, data = {}, headers = {})
+          data = clean_data(data)
           request do
             token(endpoint).put "#{Dropbox::API::Config.prefix}#{path}", data, headers
           end
+        end
+        
+        def clean_data(data)
+          data.inject({}) { |j, (k, v)| j[k.to_s] = v; j }
         end
 
       end
